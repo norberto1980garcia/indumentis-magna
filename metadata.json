@@ -1,0 +1,6 @@
+{
+  "name": "Indumentis Magna",
+  "description": "Tienda online urbana con inventario en tiempo real, pasarelas de pago, panel de administración, analíticas mensuales y comunicación por WhatsApp.",
+  "requestFramePermissions": ["notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
