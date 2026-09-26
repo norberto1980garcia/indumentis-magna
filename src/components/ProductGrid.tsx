@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, Filter, SlidersHorizontal } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Product, ProductCategory } from '../types';
 import { ProductCard } from './ProductCard';
 
@@ -23,7 +23,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   searchQuery,
 }) => {
   const [onlyInStock, setOnlyInStock] = useState(false);
-  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'stock'>('featured');
 
   // Filter products by category and search
   const filteredProducts = products.filter(product => {
@@ -56,16 +55,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     return true;
   });
 
-  // Sort
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortBy === 'price-asc') return a.price - b.price;
-    if (sortBy === 'price-desc') return b.price - a.price;
-    if (sortBy === 'stock') return b.totalStock - a.totalStock;
-    // 'featured'
-    if (a.isFeatured && !b.isFeatured) return -1;
-    if (!a.isFeatured && b.isFeatured) return 1;
-    return 0;
-  });
+  const sortedProducts = filteredProducts;
 
   return (
     <section id="productos-seccion" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -118,32 +108,18 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
           ))}
         </div>
 
-        {/* Stock toggle & Sort options */}
-        <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={onlyInStock}
-              onChange={(e) => setOnlyInStock(e.target.checked)}
-              className="accent-purple-600 rounded w-3.5 h-3.5"
-            />
-            <span>Solo en stock</span>
-          </label>
-
-          <div className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-purple-400" />
-            <select
-              value={sortBy}
-              onChange={(e: any) => setSortBy(e.target.value)}
-              className="bg-transparent text-zinc-200 border-none focus:outline-none cursor-pointer text-xs"
-            >
-              <option value="featured" className="bg-zinc-900">Destacados</option>
-              <option value="price-asc" className="bg-zinc-900">Menor precio</option>
-              <option value="price-desc" className="bg-zinc-900">Mayor precio</option>
-              <option value="stock" className="bg-zinc-900">Mayor stock</option>
-            </select>
-          </div>
-        </div>
+        {/* Stock toggle */}
+<div className="flex items-center gap-3">
+  <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer select-none">
+    <input
+      type="checkbox"
+      checked={onlyInStock}
+      onChange={(e) => setOnlyInStock(e.target.checked)}
+      className="accent-purple-600 rounded w-3.5 h-3.5"
+    />
+    <span>Solo en stock</span>
+  </label>
+</div>
       </div>
 
       {/* Product Cards Grid */}

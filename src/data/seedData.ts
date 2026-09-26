@@ -102,7 +102,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sizes: ['40', '41', '42', '43', '44'],
     stockPerSize: { '40': 2, '41': 3, '42': 3, '43': 2, '44': 1 },
     totalStock: 11,
-    image: '/assets/images/af_one_ochre.jpg',
+    image: '/assets/images/nike.jpeg',
     isFeatured: true,
     badge: 'STOCK REAL',
     description: 'Edición en cuero cálido tono ocre con Swoosh blanco impoluto, entresuela vulcanizada con amortiguación Air encapsulada y tag oficial.',

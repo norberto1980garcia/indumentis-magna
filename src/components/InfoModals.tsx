@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, ShieldCheck, MapPin, Clock, Phone, Instagram, Send, Heart, Sparkles } from 'lucide-react';
+import { X, MapPin, Clock, Phone, Instagram, Send, Sparkles } from 'lucide-react';
 import { StoreDB } from '../services/storeDb';
 
 interface InfoModalsProps {
@@ -12,14 +12,14 @@ export const InfoModals: React.FC<InfoModalsProps> = ({ type, onClose }) => {
 
   const handleOpenWhatsApp = () => {
     const msg = '¡Hola Indumentis Magna! 👋 Me gustaría hacerles una consulta sobre su catálogo y compras.';
-    const link = StoreDB.generateWhatsAppLink('+5491158249120', msg);
+    const link = StoreDB.generateWhatsAppLink('+5491164956256', msg);
     window.open(link, '_blank');
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
       <div 
-        className="relative w-full max-w-lg bg-[#110e19] border border-purple-800/60 rounded-2xl p-6 sm:p-8 shadow-[0_0_50px_rgba(168,85,247,0.3)] overflow-hidden"
+        className="relative w-full max-w-2xl bg-[#110e19] border border-purple-800/60 rounded-2xl p-6 sm:p-8 shadow-[0_0_50px_rgba(168,85,247,0.3)] overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Glow ambient effects */}
@@ -36,56 +36,72 @@ export const InfoModals: React.FC<InfoModalsProps> = ({ type, onClose }) => {
         </button>
 
         {type === 'about' ? (
-          /* NOSOTROS CONTENT */
-          <div className="space-y-5">
-            <div>
-              <div className="flex items-center gap-2 text-purple-400 mb-1">
-                <Sparkles className="w-4 h-4" />
-                <span className="text-[11px] font-mono tracking-widest uppercase">CONOCÉ NUESTRA MARCA</span>
-              </div>
-              <h2 className="text-3xl font-bebas tracking-wider text-white">
-                INDUMENTIS <span className="text-purple-400">MAGNA</span>
-              </h2>
-              <p className="text-xs text-purple-300 font-script tracking-wide mt-1">
-                Estilo que te impulsa
-              </p>
-            </div>
+  /* NOSOTROS CONTENT */
+  <div className="space-y-5 max-h-[80vh] overflow-y-auto pr-2">
+    <div>
+      <div className="flex items-center gap-2 text-purple-400 mb-2">
+        <Sparkles className="w-4 h-4" />
+        <span className="text-[11px] font-mono tracking-widest uppercase">
+          CONOCÉ NUESTRA MARCA
+        </span>
+      </div>
 
-            <div className="space-y-3 text-xs sm:text-sm text-zinc-300 leading-relaxed">
-              <p>
-                Nacimos inspirados por la cultura underground, el básquet callejero y la obsesión por las zapatillas icónicas. En <strong className="text-white">Indumentis Magna</strong> creemos que el calzado que calzas define tu actitud y tu impronta en cada paso.
-              </p>
-              <p>
-                Trabajamos exclusivamente con pares seleccionados de <strong className="text-purple-300">Air Jordan, Nike Air Force 1 y siluetas legendarias</strong>. Cada producto publicado en nuestra plataforma cuenta con verificación física de calidad, garantizando materiales auténticos, terminaciones originales y stock real listo para entrega inmediata.
-              </p>
-            </div>
+      <h2 className="text-2xl sm:text-3xl font-bebas tracking-wider text-white leading-tight">
+        PENSAMOS EN VOS CUANDO OTROS NO LO HACEN.
+      </h2>
+    </div>
 
-            {/* Core Values grid */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="bg-zinc-950/70 border border-purple-900/40 rounded-xl p-3">
-                <div className="text-purple-400 mb-1">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <h4 className="text-xs font-bold text-white font-montserrat">STOCK 100% REAL</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5">Fotos auténticas de las unidades reales en depósito.</p>
-              </div>
+    <div className="space-y-4 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+      <p>
+        <strong className="text-white">Indumentis Magna</strong> nació de una
+        necesidad que conocemos de cerca: buscar ese modelo que te gusta,
+        entrar a una tienda y descubrir que tu talle no está, o que solo hay
+        una opción para elegir.
+      </p>
 
-              <div className="bg-zinc-950/70 border border-purple-900/40 rounded-xl p-3">
-                <div className="text-purple-400 mb-1">
-                  <Heart className="w-5 h-5" />
-                </div>
-                <h4 className="text-xs font-bold text-white font-montserrat">ATENCIÓN PERSONAL</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5">Asesoramiento directo en talles y envíos vía WhatsApp.</p>
-              </div>
-            </div>
+      <p>
+        Por eso decidimos crear algo diferente.
+      </p>
 
-            <button
-              onClick={onClose}
-              className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-montserrat font-bold text-xs tracking-wider uppercase transition-colors shadow-[0_0_20px_rgba(168,85,247,0.4)]"
-            >
-              EXPLORAR CATÁLOGO
-            </button>
-          </div>
+      <p>
+        Nacimos inspirados por la cultura underground, el básquet callejero y
+        la pasión por las zapatillas que marcaron generaciones. Pero, sobre
+        todo, nacimos pensando en quienes muchas veces quedan afuera del
+        talle, del modelo y de la elección.
+      </p>
+
+      <p>
+        En <strong className="text-purple-300">Indumentis Magna</strong> creemos
+        que tener un talle grande no debería significar tener menos opciones.
+      </p>
+
+      <p>
+        Seleccionamos modelos icónicos y trabajamos con{' '}
+        <strong className="text-white">stock real</strong>, para que puedas
+        encontrar tu talle, elegir tu modelo y comprar con la tranquilidad de
+        saber exactamente qué estás llevando.
+      </p>
+
+      <p>
+        Porque no se trata solamente de calzarte una zapatilla.
+        <br />
+        <strong className="text-purple-300">
+          Se trata de encontrar una que represente quién sos.
+        </strong>
+      </p>
+    </div>
+
+    <div className="pt-3 border-t border-purple-900/40">
+      <h3 className="text-xl font-bebas tracking-wider text-white">
+        INDUMENTIS <span className="text-purple-400">MAGNA</span>
+      </h3>
+
+      <p className="text-xs text-purple-300 font-script tracking-wide mt-1">
+        Estilo que te impulsa.
+      </p>
+    </div>
+
+  </div>
         ) : (
           /* CONTACTO CONTENT */
           <div className="space-y-5">
@@ -114,7 +130,7 @@ export const InfoModals: React.FC<InfoModalsProps> = ({ type, onClose }) => {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-white">WHATSAPP VENTAS & ENVÍOS</h4>
-                    <p className="text-xs text-emerald-400 font-mono">+54 9 11 5824-9120</p>
+                    <p className="text-xs text-emerald-400 font-mono">+54 9 11 6495-6256</p>
                   </div>
                 </div>
                 <span className="text-xs bg-emerald-600 text-white font-bold px-3 py-1 rounded-full">
@@ -124,7 +140,7 @@ export const InfoModals: React.FC<InfoModalsProps> = ({ type, onClose }) => {
 
               {/* Instagram Card */}
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/indumentismagna/"
                 target="_blank"
                 rel="noreferrer"
                 className="w-full flex items-center justify-between p-4 rounded-xl bg-purple-950/30 border border-purple-800/40 hover:border-purple-500 hover:bg-purple-950/50 text-left transition-all group"
@@ -142,6 +158,28 @@ export const InfoModals: React.FC<InfoModalsProps> = ({ type, onClose }) => {
                   SEGUINOS ↗
                 </span>
               </a>
+
+              {/* TikTok Card */}
+<a
+  href="https://www.tiktok.com/@indumentismagna"
+  target="_blank"
+  rel="noreferrer"
+  className="w-full flex items-center justify-between p-4 rounded-xl bg-zinc-950/50 border border-zinc-700/60 hover:border-white/50 hover:bg-zinc-900/60 text-left transition-all group"
+>
+  <div className="flex items-center gap-3">
+    <div className="p-2.5 bg-black text-white rounded-lg border border-zinc-700 group-hover:scale-105 transition-transform">
+      <span className="text-lg font-black">♪</span>
+    </div>
+    <div>
+      <h4 className="text-sm font-bold text-white">TIKTOK OFICIAL</h4>
+      <p className="text-xs text-zinc-300">@indumentismagna</p>
+    </div>
+  </div>
+
+  <span className="text-xs text-zinc-300 font-bold group-hover:underline">
+    SEGUINOS ↗
+  </span>
+</a>
 
               {/* Info details */}
               <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-xl p-4 space-y-2 text-xs text-zinc-400">

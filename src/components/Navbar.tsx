@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Top Announcement Bar */}
       <div className="bg-gradient-to-r from-purple-950 via-purple-900 to-black text-center py-1 px-4 text-xs font-montserrat tracking-widest text-purple-200 border-b border-purple-800/40 flex items-center justify-center gap-2">
         <span className="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-        <span>ENVÍOS A TODO EL PAÍS • 3 Y 6 CUOTAS SIN INTERÉS CON MERCADO PAGO • STOCK EN TIEMPO REAL</span>
+        <span> ENVÍOS A TODO EL PAÍS • MEDIOS DE PAGO • MERCADO PAGO • VISA • MASTERCARD • </span>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

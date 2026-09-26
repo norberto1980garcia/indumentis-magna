@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, ShoppingBag, Check, MessageCircle, AlertTriangle } from 'lucide-react';
 import { Product } from '../types';
-import { StoreDB } from '../services/storeDb';
 
 interface ProductCardProps {
   product: Product;
@@ -34,11 +33,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     setTimeout(() => setAddedAnimation(false), 1200);
   };
 
-  const handleDirectWhatsApp = () => {
-    const msg = `¡Hola Indumentis Magna! 👋 Me interesa consultar por el producto *${product.name}* (${product.subtitle}) en talle *${selectedSize}*. ¿Tienen disponibilidad o asesoramiento sobre este modelo?`;
-    const link = StoreDB.generateWhatsAppLink('+5491158249120', msg);
-    window.open(link, '_blank');
-  };
+
 
   return (
     <div className="group relative flex flex-col bg-[#120f1a] border border-[#2b213b] hover:border-purple-500/70 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.25)]">
@@ -86,15 +81,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
 
-        {/* WhatsApp Floating Quick Question */}
-        <button
-          onClick={handleDirectWhatsApp}
-          title="Consultar al vendedor por WhatsApp"
-          className="absolute bottom-3 right-3 p-1.5 rounded-full bg-emerald-600/80 hover:bg-emerald-500 text-white shadow opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-[10px] px-2.5 font-bold"
-        >
-          <MessageCircle className="w-3.5 h-3.5" />
-          <span>Consultar</span>
-        </button>
+        
       </div>
 
       {/* Product Information */}

@@ -105,7 +105,7 @@ export const Footer: React.FC = () => {
 
           <div>
             <span className="text-xl sm:text-2xl font-script text-purple-300/90 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)] select-none">
-              Estilo que te impulsa
+              Pensamos en vos cuando otros no lo hacen.
             </span>
           </div>
 
