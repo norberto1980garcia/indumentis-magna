@@ -133,7 +133,7 @@ window.scrollTo({ top: 0, behavior: 'smooth' });
 const handleOpenStoreWhatsApp = () => {
 const message =
 '¡Hola Indumentis Magna! 👋 Me gustaría hacerles una consulta sobre su catálogo y compras.';
-const link = StoreDB.generateWhatsAppLink('+5491158249120', message);
+const link = StoreDB.generateWhatsAppLink('+5491164956256', message);
 window.open(link, '_blank');
 };
 

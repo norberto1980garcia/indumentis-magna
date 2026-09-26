@@ -5,7 +5,7 @@ import { StoreDB } from '../services/storeDb';
 export const Footer: React.FC = () => {
   const handleWhatsApp = () => {
     const link = StoreDB.generateWhatsAppLink(
-      '+5491158249120',
+      '+5491164956256',
       '¡Hola Indumentis Magna! 👋 Me comunico desde la tienda online para hacer una consulta.'
     );
     window.open(link, '_blank');

@@ -50,7 +50,7 @@ setTimeout(() => {
       avatar:
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
       authProvider: 'google',
-      phone: '+54 9 11 5824-9120',
+      phone: '+54 9 11 6495-6256',
       createdAt: new Date().toISOString(),
       permissions: {
         canEditInventory: true,

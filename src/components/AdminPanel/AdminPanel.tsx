@@ -49,7 +49,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       customer: {
         name: 'Nicolás Balbi',
         email: 'nico.balbi@gmail.com',
-        phone: '+54 9 11 5824-9120',
+        phone: '+54 9 11 6495-6256',
         address: 'Av. Santa Fe 2100',
         city: 'Buenos Aires',
         zipCode: '1425',

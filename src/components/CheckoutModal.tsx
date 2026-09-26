@@ -118,7 +118,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const handleSendWhatsAppConfirmation = () => {
     if (!createdOrder) return;
     const msg = `¡Hola Indumentis Magna! 👋 Acabo de realizar el pedido *${createdOrder.orderNumber}* por un total de *$${createdOrder.total.toLocaleString('es-AR')}*.\n\n👤 Cliente: ${createdOrder.customer.name}\n📍 Dirección: ${createdOrder.customer.address}, ${createdOrder.customer.city}\n💳 Método de pago: ${createdOrder.paymentMethod.toUpperCase()}.\n\n¿Me confirman la preparación y envío? ¡Muchas gracias!`;
-    const link = StoreDB.generateWhatsAppLink('+5491158249120', msg);
+    const link = StoreDB.generateWhatsAppLink('+5491164956256', msg);
     StoreDB.markWhatsAppNotified(createdOrder.id);
     window.open(link, '_blank');
   };
@@ -185,7 +185,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <input
                   type="tel"
                   required
-                  placeholder="+54 9 11 5824-9120"
+                  placeholder="+54 9 11 6495-6256"
                   value={customer.phone}
                   onChange={e => setCustomer({ ...customer, phone: e.target.value })}
                   className="w-full bg-zinc-900 border border-zinc-700 focus:border-purple-500 rounded-lg px-3 py-2 text-sm text-white focus:outline-none"

@@ -237,7 +237,7 @@ export const AdminUsers: React.FC<AdminUsersProps> = ({ users, onUsersUpdated, c
                 <label className="block text-zinc-300 font-bold mb-1">Teléfono / WhatsApp</label>
                 <input
                   type="tel"
-                  placeholder="+54 9 11 5824-9120"
+                  placeholder="+54 9 11 6495-6256"
                   value={newUser.phone}
                   onChange={e => setNewUser({ ...newUser, phone: e.target.value })}
                   className="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white"

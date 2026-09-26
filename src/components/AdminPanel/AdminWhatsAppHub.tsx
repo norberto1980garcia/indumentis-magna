@@ -11,7 +11,7 @@ interface AdminWhatsAppHubProps {
 export const AdminWhatsAppHub: React.FC<AdminWhatsAppHubProps> = ({ orders, onOrdersUpdated }) => {
   const [templates, setTemplates] = useState<WhatsAppTemplate[]>(StoreDB.getTemplates());
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>(templates[0]?.id || '');
-  const [targetPhone, setTargetPhone] = useState('+54 9 11 5824-9120');
+  const [targetPhone, setTargetPhone] = useState('+54 9 11 6495-6256');
   const [customMessage, setCustomMessage] = useState(templates[0]?.content || '');
   const [selectedOrderId, setSelectedOrderId] = useState<string>(orders[0]?.id || '');
   const [copied, setCopied] = useState(false);
