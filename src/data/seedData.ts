@@ -1,5 +1,5 @@
 import { Product, Coupon, AppUser, WhatsAppTemplate, Order } from '../types';
-
+import zapasImage from '../assets/images/zapas.jpg';
 export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'prod-jordan-1-low-td',
@@ -138,7 +138,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sizes: ['40', '41', '42', '43', '44'],
     stockPerSize: { '40': 1, '41': 2, '42': 3, '43': 2, '44': 1 },
     totalStock: 9,
-    image: '/assets/images/zapas.jpg',
+    image: zapasImage,
     isFeatured: true,
     badge: 'STOCK REAL',
     description: 'Evolución técnica con acentos volt neón brillante, correa de talón de liberación rápida y suela translúcida de goma helada con drop-in React.',
