@@ -138,7 +138,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sizes: ['40', '41', '42', '43', '44'],
     stockPerSize: { '40': 1, '41': 2, '42': 3, '43': 2, '44': 1 },
     totalStock: 9,
-    image: '/assets/images/af_one_volt.jpg',
+    image: '/assets/images/zapas.jpg',
     isFeatured: true,
     badge: 'STOCK REAL',
     description: 'Evolución técnica con acentos volt neón brillante, correa de talón de liberación rápida y suela translúcida de goma helada con drop-in React.',
@@ -180,7 +180,62 @@ export const INITIAL_PRODUCTS: Product[] = [
     description: 'Cuerpo completo en cuero naranja flúor de alta visibilidad, contraste de Swoosh blanco puro y suela de tracción naranja a tono.',
     tags: ['nike', 'af1', 'orange', 'calzado', 'sneakers'],
     createdAt: '2026-08-25T12:15:00Z'
-  }
+  },
+  {
+    id: 'prod-nike-olimpia',
+    sku: 'NK-OLIMPIA',
+    name: 'NIKE OLIMPIA',
+    subtitle: 'Nike Olimpia',
+    category: 'CALZADO',
+    price: 100,
+    originalPrice: 100,
+    sizes: ['46', '47'],
+    stockPerSize: { '46': 1, '47': 1 },
+    totalStock: 2,
+    image: '/assets/images/11.jpeg',
+    isFeatured: true,
+    badge: 'STOCK REAL',
+    description: 'Nike Olimpia disponible en talles 46 y 47.',
+    tags: ['nike', 'olimpia', 'calzado', 'talles-grandes'],
+    createdAt: '2026-09-27T12:00:00Z'
+  },
+  {
+    id: 'prod-adidas-cope',
+    sku: 'AD-COPE',
+    name: 'ADIDAS COPE',
+    subtitle: 'Adidas Cope',
+    category: 'CALZADO',
+    price: 200,
+    originalPrice: 200,
+    sizes: ['45', '46', '47'],
+    stockPerSize: { '45': 1, '46': 1, '47': 1 },
+    totalStock: 3,
+    image: '/assets/images/12.jpeg',
+    isFeatured: true,
+    badge: 'STOCK REAL',
+    description: 'Adidas Cope disponible en talles 45, 46 y 47.',
+    tags: ['adidas', 'cope', 'calzado', 'talles-grandes'],
+    createdAt: '2026-09-27T12:05:00Z'
+  },
+  {
+    id: 'prod-puma-axion',
+    sku: 'PM-AXION',
+    name: 'PUMA AXION',
+    subtitle: 'Puma Axion',
+    category: 'CALZADO',
+    price: 300,
+    originalPrice: 300,
+    sizes: ['44', '46', '47'],
+    stockPerSize: { '44': 1, '46': 1, '47': 1 },
+    totalStock: 3,
+    image: '/assets/images/13.jpeg',
+    isFeatured: true,
+    badge: 'STOCK REAL',
+    description: 'Puma Axion disponible en talles 44, 46 y 47.',
+    tags: ['puma', 'axion', 'calzado', 'talles-grandes'],
+    createdAt: '2026-09-27T12:10:00Z'
+  },
+
 ];
 
 export const INITIAL_COUPONS: Coupon[] = [
