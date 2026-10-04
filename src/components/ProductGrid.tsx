@@ -27,18 +27,17 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   // Filter products by category and search
   const filteredProducts = products.filter(product => {
     // Category match
-    if (activeCategory !== 'TODOS' && activeCategory !== 'CALZADO') {
-      if (activeCategory === 'JORDAN') {
-        const isJordan = product.name.toUpperCase().includes('JORDAN') || 
-                         product.tags.some(t => t.toLowerCase().includes('jordan'));
-        if (!isJordan) return false;
-      } else if (activeCategory === 'AIR FORCE 1') {
-        const isAF1 = product.name.toUpperCase().includes('AIR FORCE') || 
-                      product.tags.some(t => t.toLowerCase().includes('af1') || t.toLowerCase().includes('airforce'));
-        if (!isAF1) return false;
-      } else if (product.category !== activeCategory) {
-        return false;
-      }
+    // Category / Brand match
+if (activeCategory !== 'TODOS' && activeCategory !== 'CALZADO') {
+  if (['NIKE', 'ADIDAS', 'PUMA', 'NEW BALANCE'].includes(activeCategory)) {
+    const brand = product.tags.find(tag =>
+      ['NIKE', 'ADIDAS', 'PUMA', 'NEW BALANCE'].includes(tag.toUpperCase())
+    );
+
+    if (brand?.toUpperCase() !== activeCategory) return false;
+  } else if (product.category !== activeCategory) {
+    return false;
+  }
     }
     // Search query match
     if (searchQuery.trim()) {
@@ -90,22 +89,32 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
         {/* Category Pills */}
         <div className="flex flex-wrap items-center gap-2">
           {[
-            { label: 'TODOS (10)', value: 'TODOS' },
-            { label: 'JORDAN (5)', value: 'JORDAN' },
-            { label: 'AIR FORCE 1 (5)', value: 'AIR FORCE 1' },
-          ].map(cat => (
-            <button
-              key={cat.value}
-              onClick={() => onSelectCategory(cat.value)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-montserrat font-bold tracking-wider transition-all ${
-                activeCategory === cat.value
+            { label: 'TODOS', value: 'TODOS' },
+            { label: 'NIKE', value: 'NIKE' },
+            { label: 'ADIDAS', value: 'ADIDAS' },
+            { label: 'PUMA', value: 'PUMA' },
+            { label: 'NEW BALANCE', value: 'NEW BALANCE' },
+          ].map(cat => {
+            const count = cat.value === 'TODOS'
+              ? products.length
+              : products.filter(product =>
+                  product.tags.some(tag => tag.toUpperCase() === cat.value)
+                ).length;
+
+            return ( 
+              <button
+                key={cat.value}
+                onClick={() => onSelectCategory(cat.value)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-montserrat font-bold tracking-wider transition-all ${
+                  activeCategory === cat.value
                   ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.6)]'
                   : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800'
               }`}
             >
-              {cat.label}
+              {cat.label} ({count})
             </button>
-          ))}
+          );
+        })}
         </div>
 
         {/* Stock toggle */}

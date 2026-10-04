@@ -3,6 +3,7 @@ export type ProductCategory = 'ROPA' | 'CALZADO' | 'ACCESORIOS';
 export interface Product {
   id: string;
   sku: string;
+  barcode?: string;
   name: string;
   subtitle: string;
   category: ProductCategory;

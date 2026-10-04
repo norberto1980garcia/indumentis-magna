@@ -18,6 +18,8 @@ import {
   INITIAL_TEMPLATES,
 } from '../data/seedData';
 
+import { supabase } from './supabase';
+
 const STORAGE_KEYS = {
   PRODUCTS: 'indumentis_magna_products_v9',
   ORDERS: 'indumentis_magna_orders_v2',
@@ -156,6 +158,96 @@ function playNotificationChime() {
 }
 
 // =====================================================
+// PRODUCTOS DESDE SUPABASE
+// =====================================================
+
+function mapSupabaseProduct(row: any): Product {
+  let sizes: string[] = [];
+
+  if (Array.isArray(row.sizes)) {
+    sizes = row.sizes.map(String);
+  } else if (typeof row.sizes === 'string') {
+    sizes = row.sizes
+      .split(',')
+      .map((size: string) => size.trim())
+      .filter(Boolean);
+  }
+
+  return {
+    id: row.id,
+    sku: row.sku ?? '',
+    name: row.name ?? '',
+    subtitle: row.subtitle ?? '',
+    category: row.category as Product['category'],
+
+    price: Number(row.price ?? 0),
+
+    originalPrice:
+      row.original_price == null
+        ? undefined
+        : Number(row.original_price),
+
+    sizes,
+
+    stockPerSize:
+      row.stock_per_size ?? {},
+
+    totalStock:
+      Number(row.total_stock ?? 0),
+
+    image:
+      row.image_url ?? '',
+
+    additionalImages: [],
+
+    isFeatured:
+      Boolean(row.is_featured),
+
+    description:
+      row.description ?? '',
+
+    tags:
+      Array.isArray(row.tags)
+        ? row.tags
+        : typeof row.tags === 'string'
+          ? row.tags
+              .split(',')
+              .map((tag: string) => tag.trim())
+              .filter(Boolean)
+          : [],
+
+    badge:
+      row.badge ?? undefined,
+
+    createdAt:
+      row.created_at ??
+      new Date().toISOString(),
+  };
+}
+
+export async function getProductsFromSupabase(): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', {
+      ascending: false,
+    });
+
+  if (error) {
+    console.error(
+      'Error obteniendo productos de Supabase:',
+      error
+    );
+
+    return [];
+  }
+
+  return (data ?? []).map(
+    mapSupabaseProduct
+  );
+}
+
+// =====================================================
 // STORE DB
 // =====================================================
 
@@ -167,29 +259,21 @@ export const StoreDB = {
 
   getProducts(): Product[] {
     if (typeof window === 'undefined') {
-      return INITIAL_PRODUCTS;
+      return [];
     }
 
     const raw = localStorage.getItem(
       STORAGE_KEYS.PRODUCTS
     );
 
-    // Primera carga de la versión actual
     if (!raw) {
-      localStorage.setItem(
-        STORAGE_KEYS.PRODUCTS,
-        JSON.stringify(INITIAL_PRODUCTS)
-      );
-
-      return INITIAL_PRODUCTS;
+      return [];
     }
 
     try {
-      const parsed: Product[] = JSON.parse(raw);
-
-      return parsed;
+      return JSON.parse(raw);
     } catch {
-      return INITIAL_PRODUCTS;
+      return [];
     }
   },
 
@@ -210,11 +294,13 @@ export const StoreDB = {
     size: string,
     newStockForSize: number
   ) {
-    const products = this.getProducts();
+    const products =
+      this.getProducts();
 
-    const index = products.findIndex(
-      (p) => p.id === productId
-    );
+    const index =
+      products.findIndex(
+        (p) => p.id === productId
+      );
 
     if (index === -1) return;
 
@@ -230,25 +316,35 @@ export const StoreDB = {
       ),
     };
 
-    const totalStock = Object.values(
-      stockPerSize
-    ).reduce(
-      (a, b) => a + b,
-      0
+    const totalStock =
+      Object.values(
+        stockPerSize
+      ).reduce(
+        (a, b) => a + b,
+        0
+      );
+
+    product.stockPerSize =
+      stockPerSize;
+
+    product.totalStock =
+      totalStock;
+
+    products[index] =
+      product;
+
+    this.saveProducts(
+      products
     );
-
-    product.stockPerSize = stockPerSize;
-    product.totalStock = totalStock;
-
-    products[index] = product;
-
-    this.saveProducts(products);
 
     if (totalStock <= 3) {
       this.addNotification({
-        title: '⚠️ Alerta de Stock Bajo',
+        title:
+          '⚠️ Alerta de Stock Bajo',
+
         message:
           `El producto ${product.name} tiene solo ${totalStock} unidades totales disponibles.`,
+
         type: 'stock',
       });
     }
@@ -257,18 +353,23 @@ export const StoreDB = {
   updateProduct(
     updatedProduct: Product
   ) {
-    const products = this.getProducts();
+    const products =
+      this.getProducts();
 
-    const index = products.findIndex(
-      (p) => p.id === updatedProduct.id
-    );
+    const index =
+      products.findIndex(
+        (p) =>
+          p.id ===
+          updatedProduct.id
+      );
 
-    const totalStock = Object.values(
-      updatedProduct.stockPerSize || {}
-    ).reduce(
-      (a, b) => a + b,
-      0
-    );
+    const totalStock =
+      Object.values(
+        updatedProduct.stockPerSize || {}
+      ).reduce(
+        (a, b) => a + b,
+        0
+      );
 
     const productToSave = {
       ...updatedProduct,
@@ -276,22 +377,34 @@ export const StoreDB = {
     };
 
     if (index !== -1) {
-      products[index] = productToSave;
+      products[index] =
+        productToSave;
     } else {
-      products.unshift(productToSave);
+      products.unshift(
+        productToSave
+      );
     }
 
-    this.saveProducts(products);
+    this.saveProducts(
+      products
+    );
   },
 
-  deleteProduct(productId: string) {
-    const products = this
-      .getProducts()
-      .filter(
-        (p) => p.id !== productId
-      );
+  deleteProduct(
+    productId: string
+  ) {
+    const products =
+      this
+        .getProducts()
+        .filter(
+          (p) =>
+            p.id !==
+            productId
+        );
 
-    this.saveProducts(products);
+    this.saveProducts(
+      products
+    );
   },
 
   // ===================================================
@@ -303,14 +416,17 @@ export const StoreDB = {
       return INITIAL_ORDERS;
     }
 
-    const raw = localStorage.getItem(
-      STORAGE_KEYS.ORDERS
-    );
+    const raw =
+      localStorage.getItem(
+        STORAGE_KEYS.ORDERS
+      );
 
     if (!raw) {
       localStorage.setItem(
         STORAGE_KEYS.ORDERS,
-        JSON.stringify(INITIAL_ORDERS)
+        JSON.stringify(
+          INITIAL_ORDERS
+        )
       );
 
       return INITIAL_ORDERS;
@@ -323,7 +439,9 @@ export const StoreDB = {
     }
   },
 
-  saveOrders(orders: Order[]) {
+  saveOrders(
+    orders: Order[]
+  ) {
     localStorage.setItem(
       STORAGE_KEYS.ORDERS,
       JSON.stringify(orders)
@@ -345,93 +463,119 @@ export const StoreDB = {
     >
   ): Order {
 
-    const randomNum = Math.floor(
-      1000 + Math.random() * 9000
-    );
+    const randomNum =
+      Math.floor(
+        1000 +
+        Math.random() *
+        9000
+      );
 
     const orderNumber =
       `MG-${randomNum}`;
 
     const newOrder: Order = {
       ...orderData,
-      id: `ord-${Date.now()}`,
+
+      id:
+        `ord-${Date.now()}`,
+
       orderNumber,
+
       createdAt:
         new Date().toISOString(),
+
       updatedAt:
         new Date().toISOString(),
     };
 
-    // Guardar pedido
-    const orders = this.getOrders();
+    const orders =
+      this.getOrders();
 
-    orders.unshift(newOrder);
+    orders.unshift(
+      newOrder
+    );
 
-    this.saveOrders(orders);
+    this.saveOrders(
+      orders
+    );
 
-    // Descontar stock
-    const products = this.getProducts();
+    const products =
+      this.getProducts();
 
-    let inventoryUpdated = false;
+    let inventoryUpdated =
+      false;
 
-    newOrder.items.forEach((item) => {
-      const pIndex =
-        products.findIndex(
-          (p) =>
-            p.id === item.productId
-        );
+    newOrder.items.forEach(
+      (item) => {
 
-      if (pIndex !== -1) {
-        const prod =
-          products[pIndex];
+        const pIndex =
+          products.findIndex(
+            (p) =>
+              p.id ===
+              item.productId
+          );
 
-        const currentSizeStock =
+        if (pIndex !== -1) {
+
+          const prod =
+            products[pIndex];
+
+          const currentSizeStock =
+            prod.stockPerSize[
+              item.size
+            ] || 0;
+
+          const newSizeStock =
+            Math.max(
+              0,
+              currentSizeStock -
+              item.quantity
+            );
+
           prod.stockPerSize[
             item.size
-          ] || 0;
+          ] =
+            newSizeStock;
 
-        const newSizeStock =
-          Math.max(
-            0,
-            currentSizeStock -
-              item.quantity
-          );
+          prod.totalStock =
+            Object.values(
+              prod.stockPerSize
+            ).reduce(
+              (a, b) => a + b,
+              0
+            );
 
-        prod.stockPerSize[
-          item.size
-        ] = newSizeStock;
-
-        prod.totalStock =
-          Object.values(
-            prod.stockPerSize
-          ).reduce(
-            (a, b) => a + b,
-            0
-          );
-
-        inventoryUpdated = true;
+          inventoryUpdated =
+            true;
+        }
       }
-    });
+    );
 
     if (inventoryUpdated) {
-      this.saveProducts(products);
+      this.saveProducts(
+        products
+      );
     }
 
-    // Actualizar cupón
     if (newOrder.couponCode) {
+
       const coupons =
         this.getCoupons();
 
       const coupon =
         coupons.find(
           (item) =>
-            item.code.toUpperCase() ===
-            newOrder.couponCode?.toUpperCase()
+            item.code
+              .toUpperCase() ===
+            newOrder.couponCode
+              ?.toUpperCase()
         );
 
       if (coupon) {
+
         coupon.usedCount =
-          (coupon.usedCount || 0) + 1;
+          (coupon.usedCount || 0) +
+          1;
 
         this.saveCoupons(
           coupons
@@ -439,14 +583,18 @@ export const StoreDB = {
       }
     }
 
-    // Notificación
     this.addNotification({
+
       title:
         `⚡ Nuevo Pedido #${newOrder.orderNumber}`,
+
       message:
         `${newOrder.customer.name} realizó un pedido por $${newOrder.total.toLocaleString('es-AR')}.`,
+
       type: 'order',
-      link: '/admin/orders',
+
+      link:
+        '/admin/orders',
     });
 
     playNotificationChime();
@@ -459,20 +607,25 @@ export const StoreDB = {
     status: OrderStatus,
     trackingNumber?: string
   ) {
+
     const orders =
       this.getOrders();
 
     const order =
       orders.find(
-        (o) => o.id === orderId
+        (o) =>
+          o.id ===
+          orderId
       );
 
     if (!order) return;
 
-    order.status = status;
+    order.status =
+      status;
 
     if (
-      trackingNumber !== undefined
+      trackingNumber !==
+      undefined
     ) {
       order.trackingNumber =
         trackingNumber;
@@ -481,14 +634,20 @@ export const StoreDB = {
     order.updatedAt =
       new Date().toISOString();
 
-    this.saveOrders(orders);
+    this.saveOrders(
+      orders
+    );
 
     this.addNotification({
+
       title:
         `📦 Pedido #${order.orderNumber} Actualizado`,
+
       message:
         `El estado cambió a "${status.toUpperCase()}".`,
-      type: 'order',
+
+      type:
+        'order',
     });
   },
 
@@ -496,12 +655,15 @@ export const StoreDB = {
     orderId: string,
     paymentStatus: PaymentStatus
   ) {
+
     const orders =
       this.getOrders();
 
     const order =
       orders.find(
-        (o) => o.id === orderId
+        (o) =>
+          o.id ===
+          orderId
       );
 
     if (!order) return;
@@ -512,25 +674,33 @@ export const StoreDB = {
     order.updatedAt =
       new Date().toISOString();
 
-    this.saveOrders(orders);
+    this.saveOrders(
+      orders
+    );
   },
 
   markWhatsAppNotified(
     orderId: string
   ) {
+
     const orders =
       this.getOrders();
 
     const order =
       orders.find(
-        (o) => o.id === orderId
+        (o) =>
+          o.id ===
+          orderId
       );
 
     if (order) {
+
       order.whatsappNotified =
         true;
 
-      this.saveOrders(orders);
+      this.saveOrders(
+        orders
+      );
     }
   },
 
@@ -539,7 +709,11 @@ export const StoreDB = {
   // ===================================================
 
   getCoupons(): Coupon[] {
-    if (typeof window === 'undefined') {
+
+    if (
+      typeof window ===
+      'undefined'
+    ) {
       return INITIAL_COUPONS;
     }
 
@@ -549,6 +723,7 @@ export const StoreDB = {
       );
 
     if (!raw) {
+
       localStorage.setItem(
         STORAGE_KEYS.COUPONS,
         JSON.stringify(
@@ -569,9 +744,12 @@ export const StoreDB = {
   saveCoupons(
     coupons: Coupon[]
   ) {
+
     localStorage.setItem(
       STORAGE_KEYS.COUPONS,
-      JSON.stringify(coupons)
+      JSON.stringify(
+        coupons
+      )
     );
 
     broadcastUpdate(
@@ -583,16 +761,22 @@ export const StoreDB = {
   addCoupon(
     coupon: Omit<
       Coupon,
-      'id' | 'usedCount'
+      'id' |
+      'usedCount'
     >
   ) {
+
     const coupons =
       this.getCoupons();
 
     const newCoupon: Coupon = {
       ...coupon,
-      id: `cpn-${Date.now()}`,
-      usedCount: 0,
+
+      id:
+        `cpn-${Date.now()}`,
+
+      usedCount:
+        0,
     };
 
     coupons.unshift(
@@ -609,15 +793,19 @@ export const StoreDB = {
   toggleCouponActive(
     couponId: string
   ) {
+
     const coupons =
       this.getCoupons();
 
     const coupon =
       coupons.find(
-        (x) => x.id === couponId
+        (x) =>
+          x.id ===
+          couponId
       );
 
     if (coupon) {
+
       coupon.active =
         !coupon.active;
 
@@ -630,11 +818,14 @@ export const StoreDB = {
   deleteCoupon(
     couponId: string
   ) {
+
     const coupons =
       this
         .getCoupons()
         .filter(
-          (c) => c.id !== couponId
+          (c) =>
+            c.id !==
+            couponId
         );
 
     this.saveCoupons(
@@ -663,67 +854,88 @@ export const StoreDB = {
     const found =
       coupons.find(
         (c) =>
-          c.code.toUpperCase() ===
+          c.code
+            .toUpperCase() ===
           normalized
       );
 
     if (!found) {
+
       return {
         valid: false,
-        error: 'Cupón no válido',
-        discountAmount: 0,
+        error:
+          'Cupón no válido',
+        discountAmount:
+          0,
       };
     }
 
     if (!found.active) {
+
       return {
         valid: false,
         error:
           'Este cupón ya no está activo',
-        discountAmount: 0,
+        discountAmount:
+          0,
       };
     }
 
     if (
       found.minPurchase &&
-      subtotal < found.minPurchase
+      subtotal <
+      found.minPurchase
     ) {
+
       return {
         valid: false,
         error:
           `Monto mínimo de compra para este cupón: $${found.minPurchase.toLocaleString('es-AR')}`,
-        discountAmount: 0,
+        discountAmount:
+          0,
       };
     }
 
     if (
       found.maxUses &&
       found.usedCount >=
-        found.maxUses
+      found.maxUses
     ) {
+
       return {
         valid: false,
         error:
           'El cupón alcanzó el límite máximo de canjes',
-        discountAmount: 0,
+        discountAmount:
+          0,
       };
     }
 
-    let discount = 0;
+    let discount =
+      0;
 
-    if (found.discountPercent) {
-      discount = Math.round(
-        (subtotal *
-          found.discountPercent) /
+    if (
+      found.discountPercent
+    ) {
+
+      discount =
+        Math.round(
+          (
+            subtotal *
+            found.discountPercent
+          ) /
           100
-      );
+        );
+
     } else if (
       found.discountAmount
     ) {
-      discount = Math.min(
-        subtotal,
-        found.discountAmount
-      );
+
+      discount =
+        Math.min(
+          subtotal,
+          found.discountAmount
+        );
     }
 
     return {
@@ -739,7 +951,11 @@ export const StoreDB = {
   // ===================================================
 
   getUsers(): AppUser[] {
-    if (typeof window === 'undefined') {
+
+    if (
+      typeof window ===
+      'undefined'
+    ) {
       return INITIAL_USERS;
     }
 
@@ -749,6 +965,7 @@ export const StoreDB = {
       );
 
     if (!raw) {
+
       localStorage.setItem(
         STORAGE_KEYS.USERS,
         JSON.stringify(
@@ -769,9 +986,12 @@ export const StoreDB = {
   saveUsers(
     users: AppUser[]
   ) {
+
     localStorage.setItem(
       STORAGE_KEYS.USERS,
-      JSON.stringify(users)
+      JSON.stringify(
+        users
+      )
     );
 
     broadcastUpdate(
@@ -781,7 +1001,11 @@ export const StoreDB = {
   },
 
   getCurrentUser(): AppUser {
-    if (typeof window === 'undefined') {
+
+    if (
+      typeof window ===
+      'undefined'
+    ) {
       return INITIAL_USERS[0];
     }
 
@@ -791,6 +1015,7 @@ export const StoreDB = {
       );
 
     if (!raw) {
+
       localStorage.setItem(
         STORAGE_KEYS.CURRENT_USER,
         JSON.stringify(
@@ -811,14 +1036,20 @@ export const StoreDB = {
   setCurrentUser(
     user: AppUser | null
   ) {
+
     if (!user) {
+
       localStorage.removeItem(
         STORAGE_KEYS.CURRENT_USER
       );
+
     } else {
+
       localStorage.setItem(
         STORAGE_KEYS.CURRENT_USER,
-        JSON.stringify(user)
+        JSON.stringify(
+          user
+        )
       );
     }
 
@@ -833,23 +1064,31 @@ export const StoreDB = {
     newRole: AppUser['role'],
     newPermissions?: AppUser['permissions']
   ) {
+
     const users =
       this.getUsers();
 
     const user =
       users.find(
-        (u) => u.id === userId
+        (u) =>
+          u.id ===
+          userId
       );
 
     if (!user) return;
 
-    user.role = newRole;
+    user.role =
+      newRole;
 
     if (newPermissions) {
+
       user.permissions =
         newPermissions;
+
     } else {
+
       user.permissions = {
+
         canEditInventory:
           newRole === 'admin' ||
           newRole === 'seller',
@@ -881,8 +1120,10 @@ export const StoreDB = {
 
     if (
       currentUser &&
-      currentUser.id === userId
+      currentUser.id ===
+      userId
     ) {
+
       this.setCurrentUser(
         user
       );
@@ -894,6 +1135,7 @@ export const StoreDB = {
   // ===================================================
 
   getNotifications(): NotificationItem[] {
+
     if (
       typeof window ===
       'undefined'
@@ -923,18 +1165,25 @@ export const StoreDB = {
       'read'
     >
   ) {
+
     const notifications =
       this.getNotifications();
 
-    const newItem: NotificationItem = {
+    const newItem:
+      NotificationItem = {
+
       ...notif,
+
       id:
         `notif-${Date.now()}-${Math.random()
           .toString(36)
           .substring(2, 5)}`,
+
       timestamp:
         new Date().toISOString(),
-      read: false,
+
+      read:
+        false,
     };
 
     notifications.unshift(
@@ -964,13 +1213,16 @@ export const StoreDB = {
   },
 
   markNotificationsAsRead() {
+
     const notifications =
       this
         .getNotifications()
-        .map((n) => ({
-          ...n,
-          read: true,
-        }));
+        .map(
+          (n) => ({
+            ...n,
+            read: true,
+          })
+        );
 
     localStorage.setItem(
       STORAGE_KEYS.NOTIFICATIONS,
@@ -989,7 +1241,11 @@ export const StoreDB = {
   // ===================================================
 
   getTemplates(): WhatsAppTemplate[] {
-    if (typeof window === 'undefined') {
+
+    if (
+      typeof window ===
+      'undefined'
+    ) {
       return INITIAL_TEMPLATES;
     }
 
@@ -999,6 +1255,7 @@ export const StoreDB = {
       );
 
     if (!raw) {
+
       localStorage.setItem(
         STORAGE_KEYS.TEMPLATES,
         JSON.stringify(
@@ -1019,6 +1276,7 @@ export const StoreDB = {
   saveTemplates(
     templates: WhatsAppTemplate[]
   ) {
+
     localStorage.setItem(
       STORAGE_KEYS.TEMPLATES,
       JSON.stringify(
@@ -1037,6 +1295,7 @@ export const StoreDB = {
   // ===================================================
 
   getWishlist(): string[] {
+
     if (
       typeof window ===
       'undefined'
@@ -1066,20 +1325,35 @@ export const StoreDB = {
       this.getWishlist();
 
     const index =
-      list.indexOf(productId);
+      list.indexOf(
+        productId
+      );
 
-    let isAdded = false;
+    let isAdded =
+      false;
 
     if (index > -1) {
-      list.splice(index, 1);
+
+      list.splice(
+        index,
+        1
+      );
+
     } else {
-      list.push(productId);
-      isAdded = true;
+
+      list.push(
+        productId
+      );
+
+      isAdded =
+        true;
     }
 
     localStorage.setItem(
       STORAGE_KEYS.WISHLIST,
-      JSON.stringify(list)
+      JSON.stringify(
+        list
+      )
     );
 
     broadcastUpdate(
@@ -1121,33 +1395,38 @@ export const StoreDB = {
     let msg =
       templateContent;
 
-    msg = msg.replace(
-      /{cliente}/g,
-      order.customer.name
-    );
+    msg =
+      msg.replace(
+        /{cliente}/g,
+        order.customer.name
+      );
 
-    msg = msg.replace(
-      /{numero_pedido}/g,
-      order.orderNumber
-    );
+    msg =
+      msg.replace(
+        /{numero_pedido}/g,
+        order.orderNumber
+      );
 
-    msg = msg.replace(
-      /{total}/g,
-      order.total.toLocaleString(
-        'es-AR'
-      )
-    );
+    msg =
+      msg.replace(
+        /{total}/g,
+        order.total.toLocaleString(
+          'es-AR'
+        )
+      );
 
-    msg = msg.replace(
-      /{tracking}/g,
-      order.trackingNumber ||
+    msg =
+      msg.replace(
+        /{tracking}/g,
+        order.trackingNumber ||
         'En preparación'
-    );
+      );
 
-    msg = msg.replace(
-      /{direccion}/g,
-      `${order.customer.address}, ${order.customer.city}`
-    );
+    msg =
+      msg.replace(
+        /{direccion}/g,
+        `${order.customer.address}, ${order.customer.city}`
+      );
 
     return msg;
   },
@@ -1157,6 +1436,7 @@ export const StoreDB = {
   // ===================================================
 
   getCart(): CartItem[] {
+
     if (
       typeof window ===
       'undefined'
@@ -1191,7 +1471,9 @@ export const StoreDB = {
 
     localStorage.setItem(
       STORAGE_KEYS.CART,
-      JSON.stringify(cart)
+      JSON.stringify(
+        cart
+      )
     );
 
     broadcastUpdate(
@@ -1214,7 +1496,8 @@ export const StoreDB = {
         (item) =>
           item.productId ===
             product.id &&
-          item.size === size
+          item.size ===
+            size
       );
 
     const maxStock =
@@ -1226,6 +1509,7 @@ export const StoreDB = {
     if (
       existingIndex > -1
     ) {
+
       const currentQty =
         cart[
           existingIndex
@@ -1235,16 +1519,18 @@ export const StoreDB = {
         Math.min(
           maxStock,
           currentQty +
-            quantity
+          quantity
         );
 
       cart[
         existingIndex
-      ].quantity = newQty;
+      ].quantity =
+        newQty;
 
     } else {
 
       cart.push({
+
         id:
           `ci-${Date.now()}-${Math.random()
             .toString(36)
@@ -1278,7 +1564,9 @@ export const StoreDB = {
       });
     }
 
-    this.saveCart(cart);
+    this.saveCart(
+      cart
+    );
 
     return cart;
   },
@@ -1291,7 +1579,9 @@ export const StoreDB = {
     let cart =
       this.getCart();
 
-    if (newQty <= 0) {
+    if (
+      newQty <= 0
+    ) {
 
       cart =
         cart.filter(
@@ -1310,6 +1600,7 @@ export const StoreDB = {
         );
 
       if (item) {
+
         item.quantity =
           Math.min(
             item.maxAvailableStock,
@@ -1318,7 +1609,9 @@ export const StoreDB = {
       }
     }
 
-    this.saveCart(cart);
+    this.saveCart(
+      cart
+    );
 
     return cart;
   },
@@ -1336,7 +1629,9 @@ export const StoreDB = {
             cartItemId
         );
 
-    this.saveCart(cart);
+    this.saveCart(
+      cart
+    );
 
     return cart;
   },
@@ -1348,6 +1643,7 @@ export const StoreDB = {
   subscribe(
     listener: SyncListener
   ) {
+
     return subscribeToStoreSync(
       listener
     );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, Check, MessageCircle, AlertTriangle } from 'lucide-react';
+import { ShoppingBag, Check, AlertTriangle } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -22,7 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     availableSizes.length > 0 ? availableSizes[0] : product.sizes[0] || ''
   );
   const [addedAnimation, setAddedAnimation] = useState(false);
-
+  const [sizeMessage, setSizeMessage] = useState('');
   const currentSizeStock = product.stockPerSize[selectedSize] ?? 0;
   const isOutOfStock = product.totalStock === 0 || currentSizeStock === 0;
 
@@ -46,40 +46,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 filter contrast-105"
           loading="lazy"
           referrerPolicy="no-referrer"
-        />
-
-        {/* Wishlist Button */}
-        <button
-          onClick={() => onToggleWishlist(product.id)}
-          className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all ${
-            isWishlisted
-              ? 'bg-pink-600/90 text-white shadow-lg shadow-pink-600/50'
-              : 'bg-black/50 text-zinc-300 hover:text-white hover:bg-black/80'
-          }`}
-          aria-label="Añadir a favoritos"
-        >
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
-        </button>
+          />
 
         {/* Stock or Feature Badge */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1">
-          {product.badge && (
-            <span className="px-2 py-0.5 bg-purple-900/90 border border-purple-500/50 text-[10px] font-montserrat font-bold tracking-wider text-purple-200 rounded">
-              {product.badge}
-            </span>
-          )}
-          {product.totalStock <= 3 && product.totalStock > 0 && (
-            <span className="px-2 py-0.5 bg-amber-900/90 border border-amber-500/60 text-[10px] font-bold text-amber-200 rounded flex items-center gap-1">
-              <AlertTriangle className="w-3 h-3" />
-              ¡ÚLTIMAS {product.totalStock}!
-            </span>
-          )}
-          {product.totalStock === 0 && (
-            <span className="px-2 py-0.5 bg-red-900/90 border border-red-500/60 text-[10px] font-bold text-red-200 rounded">
-              AGOTADO
-            </span>
-          )}
-        </div>
+<div className="absolute top-3 left-3 flex flex-col gap-1">
+  {product.totalStock === 1 && (
+    <span className="px-2 py-0.5 bg-amber-900/90 border border-amber-500/60 text-[10px] font-bold text-amber-200 rounded flex items-center gap-1">
+      <AlertTriangle className="w-3 h-3" />
+      ¡ÚLTIMA DISPONIBLE!
+    </span>
+  )}
+
+  {product.totalStock === 0 && (
+    <span className="px-2 py-0.5 bg-red-900/90 border border-red-500/60 text-[10px] font-bold text-red-200 rounded">
+      AGOTADO
+    </span>
+  )}
+</div>
 
         
       </div>
@@ -125,14 +108,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             return (
               <button
                 key={sz}
-                onClick={() => setSelectedSize(sz)}
-                disabled={!hasStock}
+                onClick={() => {
+  if (!hasStock) {
+    setSizeMessage('SIN STOCK');
+    return;
+  }
+
+  setSizeMessage('');
+  setSelectedSize(sz);
+}}
                 className={`min-w-8 px-2 py-1 text-xs font-mono font-bold rounded transition-all ${
                   isSelected
                     ? 'bg-purple-600 text-white border border-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.7)]'
                     : hasStock
                     ? 'bg-zinc-900 text-zinc-300 border border-zinc-700 hover:border-purple-500 hover:text-white'
-                    : 'bg-zinc-950/60 text-zinc-600 border border-zinc-900 cursor-not-allowed line-through'
+                    : 'bg-zinc-950/60 text-zinc-500 border border-zinc-800 hover:border-red-500 hover:text-red-400'
                 }`}
               >
                 {sz}
@@ -140,7 +130,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             );
           })}
         </div>
-
+        {sizeMessage && (
+  <div className="text-[11px] text-red-400 font-semibold mt-1">
+    {sizeMessage}
+  </div>
+)}
         {/* "AGREGAR AL CARRITO" Action Button matching reference */}
         <button
           onClick={handleAdd}

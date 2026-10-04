@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StoreDB } from './services/storeDb';
+import { StoreDB, getProductsFromSupabase } from './services/storeDb';
+import { testSupabaseConnection } from './services/supabase';
 import { Product, Order, Coupon, AppUser, NotificationItem, CartItem } from './types';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -46,17 +47,22 @@ const [couponDiscountAmount, setCouponDiscountAmount] = useState<number>(0);
 const productsSectionRef = useRef<HTMLDivElement>(null);
 
 const reloadData = () => {
-setProducts(StoreDB.getProducts());
-setOrders(StoreDB.getOrders());
-setCoupons(StoreDB.getCoupons());
-setUsers(StoreDB.getUsers());
-setCurrentUser(StoreDB.getCurrentUser());
-setNotifications(StoreDB.getNotifications());
-setCart(StoreDB.getCart());
+  setOrders(StoreDB.getOrders());
+  setCoupons(StoreDB.getCoupons());
+  setUsers(StoreDB.getUsers());
+  setCurrentUser(StoreDB.getCurrentUser());
+  setNotifications(StoreDB.getNotifications());
+  setCart(StoreDB.getCart());
+
+  getProductsFromSupabase().then((productsFromSupabase) => {
+    console.log('PRODUCTOS DESDE SUPABASE:', productsFromSupabase);
+    setProducts(productsFromSupabase);
+  });
 };
 
 useEffect(() => {
   reloadData();
+  testSupabaseConnection();
 
   const unsubscribe = StoreDB.subscribe(() => {
     reloadData();
@@ -139,7 +145,7 @@ window.open(link, '_blank');
 
 return ( <div className="min-h-screen flex flex-col bg-[#09070c] relative selection:bg-purple-600 selection:text-white border-[4px] sm:border-[8px] border-[#130f1c]">
 
-```
+
   {/* PANEL PRIVADO */}
   {view === 'admin' ? (
     <div className="min-h-screen bg-[#07050a] flex flex-col">
