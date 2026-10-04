@@ -13,11 +13,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 1, '41': 2, '42': 2, '43': 2, '44': 1, '45': 0 },
     totalStock: 8,
     image: '/assets/images/jordan_low_tiedye.jpg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Edición especial Air Jordan 1 Low en cuero blanco y negro con talón en lavado tie-dye pastel menta y suela de tracción verde menta sobre caja negra oficial.',
     tags: ['jordan', 'aj1', 'low', 'tiedye', 'sneakers'],
-    createdAt: '2026-08-15T09:00:00Z'
+    
   },
   {
     id: 'prod-jordan-1-panda',
@@ -31,11 +28,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 2, '41': 3, '42': 4, '43': 3, '44': 2, '45': 1 },
     totalStock: 15,
     image: '/assets/images/jordan_one_panda.jpg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Silueta legendaria AJ1 Mid en combinación White / Black Panda sobre suela de goma con caja original de Jumpman.',
     tags: ['jordan', 'aj1', 'panda', 'calzado', 'sneakers'],
-    createdAt: '2026-08-10T10:00:00Z'
+    
   },
   {
     id: 'prod-jordan-6-aqua',
@@ -49,11 +43,9 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 1, '41': 2, '42': 3, '43': 2, '44': 1 },
     totalStock: 9,
     image: '/assets/images/jordan_six_aqua.jpg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Icónica silueta Air Jordan 6 en gamuza negra prémium con detalles en púrpura Concord y cyan aguamarina. Suela translúcida con Jumpman violeta, tirador trasero y caja original.',
+    
     tags: ['jordan', 'aj6', 'aqua', 'retro', 'sneakers'],
-    createdAt: '2026-08-12T11:30:00Z'
+    
   },
   {
     id: 'prod-jordan-why-not-multi',
@@ -67,11 +59,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '41': 2, '42': 3, '43': 2, '44': 1 },
     totalStock: 8,
     image: '/assets/images/jordan_whynot_multi.jpg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Sneaker de básquetbol y estética urbana radical. Cuello con patrón caleidoscópico geométrico multicolor, lengüeta perforada y suela dentada en fucsia neón.',
     tags: ['jordan', 'whynot', 'cyber', 'calzado', 'basketball'],
-    createdAt: '2026-08-25T10:30:00Z'
+    
   },
   {
     id: 'prod-jordan-delta-2-react',
@@ -85,11 +74,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 2, '41': 2, '42': 3, '43': 2, '44': 1 },
     totalStock: 10,
     image: '/assets/images/jordan_delta_react.jpg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Diseño deconstruido con capas de gamuza marrón, paneles ripstop antracita, pespuntes rojos y suela esculpida de espuma Nike React ultra amortiguada.',
     tags: ['jordan', 'delta', 'react', 'calzado', 'streetwear'],
-    createdAt: '2026-08-25T11:00:00Z'
+    
   },
   {
     id: 'prod-af1-ochre',
@@ -103,11 +89,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 2, '41': 3, '42': 3, '43': 2, '44': 1 },
     totalStock: 11,
     image: '/assets/images/nike.jpeg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Edición en cuero cálido tono ocre con Swoosh blanco impoluto, entresuela vulcanizada con amortiguación Air encapsulada y tag oficial.',
     tags: ['nike', 'af1', 'ochre', 'calzado', 'airforce'],
-    createdAt: '2026-08-25T11:15:00Z'
+    
   },
   {
     id: 'prod-af1-triple-white',
@@ -121,11 +104,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '39': 2, '40': 4, '41': 5, '42': 6, '43': 4, '44': 3, '45': 2 },
     totalStock: 26,
     image: '/assets/images/af_one_white.jpg',
-    isFeatured: true,
-    badge: 'MÁS VENDIDO',
-    description: 'El clásico indiscutido en blanco puro. Cuero nítido prémium, chapa de cordones AF1 cromada, interior forrado y suela con punto de giro circular intacto.',
     tags: ['nike', 'af1', 'white', 'calzado', 'icono'],
-    createdAt: '2026-08-25T11:30:00Z'
+    
   },
   {
     id: 'prod-af1-react-volt',
@@ -139,11 +119,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 1, '41': 2, '42': 3, '43': 2, '44': 1 },
     totalStock: 9,
     image: zapasImage,
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Evolución técnica con acentos volt neón brillante, correa de talón de liberación rápida y suela translúcida de goma helada con drop-in React.',
     tags: ['nike', 'af1', 'volt', 'react', 'calzado'],
-    createdAt: '2026-08-25T11:45:00Z'
+    
   },
   {
     id: 'prod-af1-unc',
@@ -157,11 +134,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 2, '41': 3, '42': 3, '43': 2, '44': 2 },
     totalStock: 12,
     image: '/assets/images/af_one_unc.jpg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Cuero blanco inmaculado realzado con ribetes en celeste University Blue y suela exterior completa en azul cielo Carolina.',
     tags: ['nike', 'af1', 'unc', 'blue', 'calzado'],
-    createdAt: '2026-08-25T12:00:00Z'
+    
   },
   {
     id: 'prod-af1-safety-orange',
@@ -175,11 +149,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '40': 1, '41': 3, '42': 3, '43': 2, '44': 1 },
     totalStock: 10,
     image: '/assets/images/af_one_orange.jpg',
-    isFeatured: false,
-    badge: 'STOCK REAL',
-    description: 'Cuerpo completo en cuero naranja flúor de alta visibilidad, contraste de Swoosh blanco puro y suela de tracción naranja a tono.',
     tags: ['nike', 'af1', 'orange', 'calzado', 'sneakers'],
-    createdAt: '2026-08-25T12:15:00Z'
+    
   },
   {
     id: 'prod-nike-olimpia',
@@ -193,11 +164,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '46': 1, '47': 1 },
     totalStock: 2,
     image: '/assets/images/11.jpeg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Nike Olimpia disponible en talles 46 y 47.',
     tags: ['nike', 'olimpia', 'calzado', 'talles-grandes'],
-    createdAt: '2026-09-27T12:00:00Z'
+    
   },
   {
     id: 'prod-adidas-cope',
@@ -211,11 +179,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '45': 1, '46': 1, '47': 1 },
     totalStock: 3,
     image: '/assets/images/12.jpeg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Adidas Cope disponible en talles 45, 46 y 47.',
     tags: ['adidas', 'cope', 'calzado', 'talles-grandes'],
-    createdAt: '2026-09-27T12:05:00Z'
+    
   },
   {
     id: 'prod-puma-axion',
@@ -229,11 +194,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     stockPerSize: { '44': 1, '46': 1, '47': 1 },
     totalStock: 3,
     image: '/assets/images/13.jpeg',
-    isFeatured: true,
-    badge: 'STOCK REAL',
-    description: 'Puma Axion disponible en talles 44, 46 y 47.',
     tags: ['puma', 'axion', 'calzado', 'talles-grandes'],
-    createdAt: '2026-09-27T12:10:00Z'
+    
   },
 
 ];

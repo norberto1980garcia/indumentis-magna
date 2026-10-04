@@ -200,11 +200,8 @@ function mapSupabaseProduct(row: any): Product {
 
     additionalImages: [],
 
-    isFeatured:
-      Boolean(row.is_featured),
-
-    description:
-      row.description ?? '',
+    
+    
 
     tags:
       Array.isArray(row.tags)
@@ -215,13 +212,6 @@ function mapSupabaseProduct(row: any): Product {
               .map((tag: string) => tag.trim())
               .filter(Boolean)
           : [],
-
-    badge:
-      row.badge ?? undefined,
-
-    createdAt:
-      row.created_at ??
-      new Date().toISOString(),
   };
 }
 

@@ -14,11 +14,7 @@ export interface Product {
   totalStock: number;
   image: string;
   additionalImages?: string[];
-  isFeatured: boolean;
-  description: string;
   tags: string[];
-  badge?: string;
-  createdAt: string;
 }
 
 export interface CartItem {

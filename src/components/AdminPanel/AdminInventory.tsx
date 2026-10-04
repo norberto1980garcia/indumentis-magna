@@ -47,9 +47,6 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
       '44': 2
     },
     image: '',
-    description: '',
-    isFeatured: true,
-    badge: 'NUEVO INGRESO',
     tags: ['sneakers', 'streetwear', 'nuevo']
   });
 
@@ -191,7 +188,7 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
     const createdProduct: Product = {
       id: `prod-${Date.now()}`,
       sku,
-      name: newProd.name.toUpperCase(),
+      name: newProd.name!.toUpperCase(),
       subtitle: newProd.subtitle || 'Colección Urbana',
       category:
         (newProd.category as ProductCategory) || 'CALZADO',
@@ -225,21 +222,11 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
       // Ahora solamente utiliza la foto real cargada.
       image: newProd.image,
 
-      description:
-        newProd.description ||
-        'Artículo original de Indumentis Magna.',
-
       tags:
         newProd.tags || [
           'nuevo',
           'streetwear'
-        ],
-
-      badge: newProd.badge,
-
-      isFeatured: Boolean(newProd.isFeatured),
-
-      createdAt: new Date().toISOString()
+        ]
     };
 
     StoreDB.updateProduct(createdProduct);
@@ -260,9 +247,6 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
         '44': 2
       },
       image: '',
-      description: '',
-      isFeatured: true,
-      badge: 'NUEVO INGRESO',
       tags: ['sneakers', 'streetwear', 'nuevo']
     });
 
@@ -523,12 +507,6 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
                           <p className="font-bold text-white text-xs">
                             {product.name}
                           </p>
-
-                          {product.badge && (
-                            <span className="px-1.5 py-0.5 bg-purple-950 text-purple-300 border border-purple-800/60 rounded text-[9px] font-mono">
-                              {product.badge}
-                            </span>
-                          )}
 
                         </div>
 
@@ -975,54 +953,29 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
 
               </div>
 
-              {/* PRICE + BADGE */}
+              {/* PRICE */}
 
-              <div className="grid grid-cols-2 gap-3">
+              <div>
 
-                <div>
+                <label className="block text-zinc-300 font-bold mb-1">
+                  Precio ($ ARS) *
+                </label>
 
-                  <label className="block text-zinc-300 font-bold mb-1">
-                    Precio ($ ARS) *
-                  </label>
-
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={newProd.price}
-                    onChange={(e) =>
-                      setNewProd({
-                        ...newProd,
-                        price: Number(
-                          e.target.value
-                        )
-                      })
-                    }
-                    className="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white font-mono"
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="block text-zinc-300 font-bold mb-1">
-                    Badge Opcional
-                  </label>
-
-                  <input
-                    type="text"
-                    placeholder="Ej: STOCK REAL / EXCLUSIVO"
-                    value={newProd.badge}
-                    onChange={(e) =>
-                      setNewProd({
-                        ...newProd,
-                        badge: e.target.value
-                      })
-                    }
-                    className="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white"
-                  />
-
-                </div>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  value={newProd.price}
+                  onChange={(e) =>
+                    setNewProd({
+                      ...newProd,
+                      price: Number(
+                        e.target.value
+                      )
+                    })
+                  }
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white font-mono"
+                />
 
               </div>
 
@@ -1096,32 +1049,6 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
                   ))}
 
                 </div>
-
-              </div>
-
-              {/* DESCRIPTION */}
-
-              <div>
-
-                <label className="block text-zinc-300 font-bold mb-1">
-                  Descripción
-                </label>
-
-                <textarea
-                  rows={2}
-                  placeholder="Detalles de la prenda o calzado..."
-                  value={
-                    newProd.description || ''
-                  }
-                  onChange={(e) =>
-                    setNewProd({
-                      ...newProd,
-                      description:
-                        e.target.value
-                    })
-                  }
-                  className="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white"
-                />
 
               </div>
 
@@ -1343,31 +1270,6 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
                   )}
 
                 </div>
-
-              </div>
-
-              {/* DESCRIPTION */}
-
-              <div>
-
-                <label className="block text-zinc-300 font-bold mb-1">
-                  Descripción
-                </label>
-
-                <textarea
-                  rows={2}
-                  value={
-                    editingProduct.description
-                  }
-                  onChange={(e) =>
-                    setEditingProduct({
-                      ...editingProduct,
-                      description:
-                        e.target.value
-                    })
-                  }
-                  className="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white"
-                />
 
               </div>
 
