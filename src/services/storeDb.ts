@@ -227,11 +227,8 @@ function mapSupabaseProduct(row: any): Product {
 
 export async function getProductsFromSupabase(): Promise<Product[]> {
   const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .order('created_at', {
-      ascending: false,
-    });
+  .from('products')
+  .select('*');
 
   if (error) {
     console.error(
