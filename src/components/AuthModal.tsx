@@ -3,6 +3,7 @@ import { X, LogOut, Lock, Settings } from 'lucide-react';
 import { AppUser } from '../types';
 import { StoreDB } from '../services/storeDb';
 import { INITIAL_USERS } from '../data/seedData';
+import { supabase } from '../services/supabase';
 
 interface AuthModalProps {
 isOpen: boolean;
@@ -73,48 +74,105 @@ setTimeout(() => {
 
 };
 
-const handleEmailAuth = (e: React.FormEvent) => {
-e.preventDefault();
-setIsAuthenticating(true);
+const handleEmailAuth = async (e: React.FormEvent) => {
+  e.preventDefault();
 
+  setIsAuthenticating(true);
 
-setTimeout(() => {
-  const newUser: AppUser = {
-    id: `usr-${Date.now()}`,
-    name: name || email.split('@')[0],
-    email,
-    role: 'customer',
-    authProvider: 'email',
-    createdAt: new Date().toISOString(),
-    permissions: {
-      canEditInventory: false,
-      canManageOrders: false,
-      canViewAnalytics: false,
-      canManageCoupons: false,
-      canManageUsers: false,
-      canSendWhatsApp: false,
-    },
-  };
+  try {
+    const { data, error } =
+      await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
-  StoreDB.setCurrentUser(newUser);
-  onUserChange(newUser);
-  setIsAuthenticating(false);
-  onClose();
-}, 800);
+    if (error) {
+      console.error(
+        'Error iniciando sesión con Supabase:',
+        error
+      );
 
+      alert(
+        'No se pudo iniciar sesión. Verificá el email y la contraseña.'
+      );
 
+      return;
+    }
+
+    if (!data.user) {
+      alert('No se pudo obtener el usuario autenticado.');
+      return;
+    }
+    console.log('USUARIO SUPABASE:', data.user);
+    const isAdmin = data.user.id ===
+      '41d2e03e-df49-496c-8f1f-dddde1b55d4e';
+
+    const appUser: AppUser = {
+      id: data.user.id,
+      name:
+        data.user.email?.split('@')[0] ||
+        'Usuario',
+      email: data.user.email || email,
+      role: isAdmin ? 'admin' : 'customer',
+      authProvider: 'email',
+      createdAt:
+        data.user.created_at ||
+        new Date().toISOString(),
+      permissions: {
+        canEditInventory: isAdmin,
+        canManageOrders: isAdmin,
+        canViewAnalytics: isAdmin,
+        canManageCoupons: isAdmin,
+        canManageUsers: isAdmin,
+        canSendWhatsApp: isAdmin,
+      },
+    };
+
+    StoreDB.setCurrentUser(appUser);
+    onUserChange(appUser);
+    onClose();
+
+  } catch (error) {
+    console.error(
+      'Error inesperado en autenticación:',
+      error
+    );
+
+    alert(
+      'Ocurrió un error al iniciar sesión.'
+    );
+
+  } finally {
+    setIsAuthenticating(false);
+  }
 };
-
 const handleSelectDemoUser = (user: AppUser) => {
 StoreDB.setCurrentUser(user);
 onUserChange(user);
 onClose();
 };
 
-const handleLogout = () => {
-StoreDB.setCurrentUser(null);
-onUserChange(null);
-onClose();
+const handleLogout = async () => {
+  const { error } = await supabase.auth.signOut();
+
+  console.log('RESULTADO SIGN OUT:', error);
+
+  if (error) {
+    console.error(
+      'Error cerrando sesión de Supabase:',
+      error
+    );
+
+    alert(
+      'No se pudo cerrar la sesión. Intentá nuevamente.'
+    );
+
+    return;
+  }
+
+  StoreDB.setCurrentUser(null);
+  onUserChange(null);
+  onClose();
 };
 
 return ( <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"> <div className="relative w-full max-w-md bg-[#120f1a] border border-purple-900/60 rounded-2xl shadow-2xl overflow-hidden">

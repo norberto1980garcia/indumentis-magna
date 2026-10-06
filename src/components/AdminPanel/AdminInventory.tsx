@@ -88,42 +88,39 @@ export const AdminInventory: React.FC<AdminInventoryProps> = ({
   // ---------------------------------------------------------
   // STOCK
   // ---------------------------------------------------------
+  const handleStockChange = async (
+  productId: string,
+  size: string,
+  newStock: number
+) => {
+  await StoreDB.updateProductStock(
+    productId,
+    size,
+    Math.max(0, newStock)
+  );
 
-  const handleStockChange = (
-    productId: string,
-    size: string,
-    newStock: number
-  ) => {
-    StoreDB.updateProductStock(
-      productId,
-      size,
-      Math.max(0, newStock)
-    );
-
-    onProductsUpdated();
-  };
-
+  onProductsUpdated();
+};
   // ---------------------------------------------------------
   // PRICE
   // ---------------------------------------------------------
+const handlePriceSave = async (
+  product: Product,
+  newPrice: number
+) => {
+  await StoreDB.updateProduct({
+    ...product,
+    price: Math.max(0, newPrice)
+  });
 
-  const handlePriceSave = (
-    product: Product,
-    newPrice: number
-  ) => {
-    StoreDB.updateProduct({
-      ...product,
-      price: Math.max(0, newPrice)
-    });
+  setEditingPrice((prev) => {
+    const n = { ...prev };
+    delete n[product.id];
+    return n;
+  });
 
-    setEditingPrice((prev) => {
-      const n = { ...prev };
-      delete n[product.id];
-      return n;
-    });
-
-    onProductsUpdated();
-  };
+  onProductsUpdated();
+};
 
   // ---------------------------------------------------------
   // DELETE

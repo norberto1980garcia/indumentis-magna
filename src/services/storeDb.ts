@@ -214,9 +214,10 @@ function mapSupabaseProduct(row: any): Product {
 export async function getProductsFromSupabase(): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
-    .select('*');
+    .select('*')
+    .order('sort_order', { ascending: true });
 
-if (error) {
+  if (error) {
     console.error(
       'Error obteniendo productos de Supabase:',
       error

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StoreDB, getProductsFromSupabase } from './services/storeDb';
-import { testSupabaseConnection } from './services/supabase';
+import { supabase, testSupabaseConnection } from './services/supabase';
 import { Product, Order, Coupon, AppUser, NotificationItem, CartItem } from './types';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -50,7 +50,40 @@ const reloadData = () => {
   setOrders(StoreDB.getOrders());
   setCoupons(StoreDB.getCoupons());
   setUsers(StoreDB.getUsers());
-  setCurrentUser(StoreDB.getCurrentUser());
+  supabase.auth.getUser().then(({ data }) => {
+  if (!data.user) {
+    setCurrentUser(null);
+    return;
+  }
+
+  const isAdmin =
+    data.user.id ===
+    '41d2e03e-df49-496c-8f1f-dddde1b55d4e';
+
+  const appUser: AppUser = {
+    id: data.user.id,
+    name:
+      data.user.email?.split('@')[0] ||
+      'Usuario',
+    email:
+      data.user.email || '',
+    role: isAdmin ? 'admin' : 'customer',
+    authProvider: 'email',
+    createdAt:
+      data.user.created_at ||
+      new Date().toISOString(),
+    permissions: {
+      canEditInventory: isAdmin,
+      canManageOrders: isAdmin,
+      canViewAnalytics: isAdmin,
+      canManageCoupons: isAdmin,
+      canManageUsers: isAdmin,
+      canSendWhatsApp: isAdmin,
+    },
+  };
+
+  setCurrentUser(appUser);
+});
   setNotifications(StoreDB.getNotifications());
   setCart(StoreDB.getCart());
 
