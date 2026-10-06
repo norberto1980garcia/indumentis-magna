@@ -160,7 +160,6 @@ function playNotificationChime() {
 // =====================================================
 // PRODUCTOS DESDE SUPABASE
 // =====================================================
-
 function mapSupabaseProduct(row: any): Product {
   let sizes: string[] = [];
 
@@ -176,32 +175,30 @@ function mapSupabaseProduct(row: any): Product {
   return {
     id: row.id,
     sku: row.sku ?? '',
+    brand: row.brand ?? '',
+    model: row.model ?? '',
     name: row.name ?? '',
     subtitle: row.subtitle ?? '',
     category: row.category as Product['category'],
-
     price: Number(row.price ?? 0),
 
     originalPrice:
-      row.original_price == null
+      row.originalPrice == null
         ? undefined
-        : Number(row.original_price),
+        : Number(row.originalPrice),
 
     sizes,
 
     stockPerSize:
-      row.stock_per_size ?? {},
+      row.stockPerSize ?? {},
 
     totalStock:
-      Number(row.total_stock ?? 0),
+      Number(row.totalStock ?? 0),
 
     image:
-      row.image_url ?? '',
+      row.image ?? '',
 
     additionalImages: [],
-
-    
-    
 
     tags:
       Array.isArray(row.tags)
@@ -214,18 +211,16 @@ function mapSupabaseProduct(row: any): Product {
           : [],
   };
 }
-
 export async function getProductsFromSupabase(): Promise<Product[]> {
   const { data, error } = await supabase
-  .from('products')
-  .select('*');
+    .from('products')
+    .select('*');
 
-  if (error) {
+if (error) {
     console.error(
       'Error obteniendo productos de Supabase:',
       error
     );
-
     return [];
   }
 
@@ -233,13 +228,11 @@ export async function getProductsFromSupabase(): Promise<Product[]> {
     mapSupabaseProduct
   );
 }
-
 // =====================================================
 // STORE DB
 // =====================================================
 
 export const StoreDB = {
-
   // ===================================================
   // PRODUCTOS
   // ===================================================
@@ -276,124 +269,164 @@ export const StoreDB = {
     );
   },
 
-  updateProductStock(
+  async updateProductStock(
     productId: string,
     size: string,
     newStockForSize: number
   ) {
-    const products =
-      this.getProducts();
+    const { data: product, error: fetchError } =
+      await supabase
+        .from('products')
+        .select('stockPerSize')
+        .eq('id', productId)
+        .single();
 
-    const index =
-      products.findIndex(
-        (p) => p.id === productId
+    if (fetchError || !product) {
+      console.error(
+        'Error obteniendo producto para actualizar stock:',
+        fetchError
       );
-
-    if (index === -1) return;
-
-    const product = {
-      ...products[index],
-    };
+      return;
+    }
 
     const stockPerSize = {
-      ...product.stockPerSize,
-      [size]: Math.max(
-        0,
-        newStockForSize
-      ),
+      ...(product.stockPerSize ?? {}),
+      [size]: Math.max(0, newStockForSize),
     };
 
-    const totalStock =
-      Object.values(
-        stockPerSize
-      ).reduce(
-        (a, b) => a + b,
-        0
+    const totalStock = Object.values(
+      stockPerSize
+    ).reduce<number>(
+      (total, stock) =>
+        total + Number(stock),
+      0
+    );
+
+    const { error: updateError } =
+      await supabase
+        .from('products')
+        .update({
+          stockPerSize,
+          totalStock,
+        })
+        .eq('id', productId);
+
+    if (updateError) {
+      console.error(
+        'Error actualizando stock en Supabase:',
+        updateError
       );
+      return;
+    }
 
-    product.stockPerSize =
-      stockPerSize;
-
-    product.totalStock =
-      totalStock;
-
-    products[index] =
-      product;
-
-    this.saveProducts(
-      products
+    broadcastUpdate(
+      'PRODUCTS_UPDATED'
     );
 
     if (totalStock <= 3) {
-      this.addNotification({
-        title:
-          '⚠️ Alerta de Stock Bajo',
+      const products =
+        await getProductsFromSupabase();
 
-        message:
-          `El producto ${product.name} tiene solo ${totalStock} unidades totales disponibles.`,
-
-        type: 'stock',
-      });
-    }
-  },
-
-  updateProduct(
-    updatedProduct: Product
-  ) {
-    const products =
-      this.getProducts();
-
-    const index =
-      products.findIndex(
-        (p) =>
-          p.id ===
-          updatedProduct.id
-      );
-
-    const totalStock =
-      Object.values(
-        updatedProduct.stockPerSize || {}
-      ).reduce(
-        (a, b) => a + b,
-        0
-      );
-
-    const productToSave = {
-      ...updatedProduct,
-      totalStock,
-    };
-
-    if (index !== -1) {
-      products[index] =
-        productToSave;
-    } else {
-      products.unshift(
-        productToSave
-      );
-    }
-
-    this.saveProducts(
-      products
-    );
-  },
-
-  deleteProduct(
-    productId: string
-  ) {
-    const products =
-      this
-        .getProducts()
-        .filter(
-          (p) =>
-            p.id !==
-            productId
+      const updatedProduct =
+        products.find(
+          (p) => p.id === productId
         );
 
-    this.saveProducts(
-      products
+      if (updatedProduct) {
+        this.addNotification({
+          title:
+            '⚠️ Alerta de Stock Bajo',
+
+          message:
+            `El producto ${updatedProduct.name} tiene solo ${totalStock} unidades totales disponibles.`,
+
+          type: 'stock',
+        });
+      }
+    }
+  },
+
+  async updateProduct(
+    updatedProduct: Product
+  ) {
+    const totalStock = Object.values(
+      updatedProduct.stockPerSize || {}
+    ).reduce(
+      (total, stock) =>
+        total + Number(stock),
+      0
+    );
+
+    const { error } =
+      await supabase
+        .from('products')
+        .update({
+          sku: updatedProduct.sku,
+          brand: updatedProduct.brand ?? '',
+          model: updatedProduct.model ?? '',
+          name: updatedProduct.name,
+          subtitle: updatedProduct.subtitle,
+          category: updatedProduct.category,
+          price: updatedProduct.price,
+          originalPrice:
+            updatedProduct.originalPrice ?? null,
+          sizes: updatedProduct.sizes,
+          stockPerSize:
+            updatedProduct.stockPerSize,
+          totalStock,
+          image: updatedProduct.image,
+          tags:
+            updatedProduct.tags ?? [],
+        })
+        .eq(
+          'id',
+          updatedProduct.id
+        );
+
+    if (error) {
+      console.error(
+        'Error actualizando producto en Supabase:',
+        error
+      );
+      return;
+    }
+
+    console.log(
+      'Producto actualizado correctamente en Supabase:',
+      updatedProduct.id
+    );
+
+    broadcastUpdate(
+      'PRODUCTS_UPDATED'
     );
   },
 
+    async deleteProduct(
+    productId: string
+  ) {
+    const { error } =
+      await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId);
+
+    if (error) {
+      console.error(
+        'Error eliminando producto de Supabase:',
+        error
+      );
+      return;
+    }
+
+    console.log(
+      'Producto eliminado correctamente de Supabase:',
+      productId
+    );
+
+    broadcastUpdate(
+      'PRODUCTS_UPDATED'
+    );
+  },
   // ===================================================
   // PEDIDOS
   // ===================================================

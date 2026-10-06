@@ -3,6 +3,8 @@ export type ProductCategory = 'ROPA' | 'CALZADO' | 'ACCESORIOS';
 export interface Product {
   id: string;
   sku: string;
+  brand?: string;
+  model?: string;
   barcode?: string;
   name: string;
   subtitle: string;
